@@ -1,5 +1,6 @@
 #!/usr/bin/python2.7
 import numpy as np
+<<<<<<< HEAD
 import numpy.random as random
 
 
@@ -87,3 +88,7 @@ for iteration in range(n):
         
         
         
+=======
+
+print('hello world!')
+>>>>>>> origin/master
