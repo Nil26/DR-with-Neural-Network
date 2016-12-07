@@ -28,27 +28,6 @@ batchdata = np.zeros((numcases,numdim, numbatches))
 n = 1000
 
 
-#initializeing symmetric weights and bias
-weight_vh = 0.1 * random.rand(numdim, numhid)
-hibias = np.zeros((1,numhid))
-vibias = np.zeros((1,numdim))
-
-# probabilities we may need while calculation
-data_hidprob = np.zeros((numcases, numhid))
-all_data_hidprob = np.zeros((numdim, numhid))
-con_data_hidprob = np.zeros((numcases, numhid))
-all_con_data_hidprob = np.zeros((numdim, numhid))
-con_hid_dataprob = np.zeros(numcases, numdim)
-# change of parameters
-delta_weight = np.zeros((numdim, numhid))
-delta_vibias = np.zeros((1,numdim))
-delta_hibias = np.zeros((1,numhid))
-
-
-# out put data
-hid_data = np.zeros((numcases, numhid))
-hid_con = np.zeros((numcases, numhid))
-data_con = np.zeros((numcases, numhid))
 
 
 # calculate the probability of data or hidden variable
@@ -82,26 +61,51 @@ def fun_CD_k(k, data):
     for i in range(k):
         #construct hidden layer from data
         prob_hid = func_prob(data_k[k,:,:], weight_vh, hibias)
-        hidden_k[k] = fun_uphid(hidden_k[k],data_hidprob)
+        hidden_k[k] = fun_uphid(hidden_k[k],prob_hid)
         #construct confabulation state from hidden layers
-        con_dataprob = func_prob(hid_data, weight_vh, vibias)
+        prob_data = func_prob(hid_data, weight_vh, vibias)
         data_k[k+1] = fun_uphid(data_k[k+1],con_dataprob)
     #construct confabulation hidden state from confabulation data
     hidprob = func_prob(data_k[k+1], weight_vh, hibias)
     hid_con = fun_uphid(hid_con, hidprob)
     return hid_con, data_k[k+1]
-        
 
-for iteration in range(n):
-    for batch in range(numbatches):
-        data = batchdata[:,:,batch]
-        #CD-k algorithm
-        hid_con, data_con = fun_CD_k(k, data)
-        # update parameters:
-        weight_vh = weight_vh + delta_weight
-        hibias = hibias + delta_hibias
-        vibias = vibias + delta_vibias
-        if delta_weight < 0.001 and hibias < 0.001 and vibias < 0.001:
-            break
-        
+#define one layer RBM     
+def fun_RBM(batchdata, numdim, numhid)
+    #initializeing symmetric weights and bias
+    weight_vh = 0.1 * random.rand(numdim, numhid)
+    hibias = np.zeros((1,numhid))
+    vibias = np.zeros((1,numdim))
+
+    # probabilities we may need while calculation
+    data_hidprob = np.zeros((numcases, numhid))
+    all_data_hidprob = np.zeros((numdim, numhid))
+    con_data_hidprob = np.zeros((numcases, numhid))
+    all_con_data_hidprob = np.zeros((numdim, numhid))
+    con_hid_dataprob = np.zeros(numcases, numdim)
+    # change of parameters
+    delta_weight = np.zeros((numdim, numhid))
+    delta_vibias = np.zeros((1,numdim))
+    delta_hibias = np.zeros((1,numhid))
+    
+    
+    #out put data
+    hid_data = np.zeros((numcases, numhid))
+    hid_con = np.zeros((numcases, numhid))
+    data_con = np.zeros((numcases, numhid))
+    
+    for iteration in range(n):
+        for batch in range(numbatches):
+            data = batchdata[:,:,batch]
+            #CD-k algorithm
+            hid_con, data_con = fun_CD_k(k, data)
+            # update parameters:
+            weight_vh = weight_vh + delta_weight
+            hibias = hibias + delta_hibias
+            vibias = vibias + delta_vibias
+            if delta_weight < 0.001 and hibias < 0.001 and vibias < 0.001:
+                break
+    prob = func_prob(data, weight_vh, hibias)
+    hid_data = fun_uphid(hid_data, prob)
+    return hid_data, weight_vh, hibias, vibias
         
