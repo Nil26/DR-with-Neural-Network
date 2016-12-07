@@ -13,7 +13,8 @@ weightcost = 0.0002
 initialmomentum = 0.5
 finalmomentum = 0.9
 
-
+#parameter to decide algorithm
+k = 1
 
 
 # parameters of the data and output
@@ -74,18 +75,28 @@ def fun_delta_bias(data, con_data, epsilonvb):
     return epsilonvb /(data.mean(1) - data_con.mean(2))
 
 
+def fun_CD_k(k, data):
+    data_k = np.zeros((k+1, numcases, numdim))
+    data_k[0,:,:] = data
+    hidden_k = np.zeros((k+1,numcases,numhid))
+    for i in range(k):
+        #construct hidden layer from data
+        prob_hid = func_prob(data_k[k,:,:], weight_vh, hibias)
+        hidden_k[k] = fun_uphid(hidden_k[k],data_hidprob)
+        #construct confabulation state from hidden layers
+        con_dataprob = func_prob(hid_data, weight_vh, vibias)
+        data_k[k+1] = fun_uphid(data_k[k+1],con_dataprob)
+    #construct confabulation hidden state from confabulation data
+    hidprob = func_prob(data_k[k+1], weight_vh, hibias)
+    hid_con = fun_uphid(hid_con, hidprob)
+    return hid_con, data_k[k+1]
+        
+
 for iteration in range(n):
     for batch in range(numbatches):
         data = batchdata[:,:,batch]
-        #construct hidden layer from data
-        data_hidprob = func_prob(data, weight_vh, hibias)
-        hid_data = fun_uphid(hid_data,data_hidprob)
-        #construct confabulation state from hidden layers
-        con_hid_dataprob = func_prob(hid_data, weight_vh, vibias)
-        data_con = fun_uphid(data_con,con_hid_dataprob)
-        #construct confabulation hidden state from confabulation data
-        con_data_hidprob = func_prob(data_con, weight_vh, hibias)
-        hid_con = fun_uphid(hid_con, con_data_hidprob)
+        #CD-k algorithm
+        hid_con, data_con = fun_CD_k(k, data)
         # update parameters:
         weight_vh = weight_vh + delta_weight
         hibias = hibias + delta_hibias
@@ -94,8 +105,3 @@ for iteration in range(n):
             break
         
         
-        
-=======
-
-print('hello world!')
->>>>>>> origin/master
