@@ -19,7 +19,7 @@ k = 1
 
 # parameters of the data and output
 numcases = 1000
-numdim = 1000 # this is the number of visble dimensions
+numdim = 1000 # this is the number of visible dimensions
 numbatches = 100
 numhid = 20
 #data
@@ -35,7 +35,7 @@ def func_prob(data, weight_vh, hibias):
     Ones_m = np.full((numcases,numhid), 1.0)
     #element inside logistic function
     X = - np.dots(data, weight_vh) - hibias
-    prob = np.divide(Ones_m, np.add(Ones_m, np.exp(X))    
+    prob = np.divide(Ones_m, np.add(Ones_m, np.exp(X)))
     return prob
 
 
