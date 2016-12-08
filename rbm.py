@@ -36,6 +36,7 @@ def fun_prob_h(data, weight_vh, hibias):
     Ones_m = np.full((numcases,numhid), 1.0)
     #element inside logistic function
 <<<<<<< HEAD
+<<<<<<< HEAD
     X = - np.dots(data, weight_vh) - np.repeat(hibias, axis=0)
     prob = np.divide(Ones_m, np.add(Ones_m, np.exp(X))    
     return prob
@@ -49,6 +50,10 @@ def fun_prob_d(hid_data, weight_vh, vibias):
     X = - np.dots(data, weight_vh) - hibias
     prob = np.divide(Ones_m, np.add(Ones_m, np.exp(X)))
 >>>>>>> origin/master
+=======
+    X = - np.dots(data, weight_vh) - hibias
+    prob = np.divide(Ones_m, np.add(Ones_m, np.exp(X)))
+>>>>>>> d0e63d30bd61dfed2dbda829329586d41741aea0
     return prob
 
 
