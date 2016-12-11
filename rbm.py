@@ -16,16 +16,14 @@ finalmomentum = 0.9
 #parameter to decide algorithm
 k = 1
 
-
 # parameters of the data and output
 numcases = 1000
-numdim = 1000 # this is the number of visible dimensions
+numdim = 1000 # this is the number of visble dimensions
 numbatches = 100
 numhid = 20
 #data
 batchdata = np.zeros((numcases,numdim, numbatches))
-#number of data
-N_t = numcases * numbatches
+
 # number of run
 n = 1000
 
@@ -93,7 +91,11 @@ def fun_CD_k(k, data, weight_vh, hibias, vibias):
 #####################################################################################################
 #define one layer RBM (normal)
 #################################################################################
-def fun_RBM(batchdata, numdim, numhid, numcases):
+def fun_RBM(batchdata, numhid):
+    # parameters of the data and output
+    numcases, numdim, numbatches = batchdata.shape
+    #number of data
+    N_t = numcases * numbatches    
     #initializeing symmetric weights and bias
     weight_vh = 0.1 * random.rand(numdim, numhid)
     hibias = np.zeros((1,numhid))

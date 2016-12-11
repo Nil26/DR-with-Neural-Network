@@ -96,7 +96,12 @@ def fun_CD_k_c(k, data, weight_vh, vibias, hibias):
 #define continuous to binary PBM
 #####################################################################
 
-def fun_RBM_con(bachdata, numdim, numhid, numcases):
+def fun_RBM_con(bachdata, numhid):
+    # parameters of the data and output
+    numcases, numdim, numbatches = batchdata.shape
+    #number of data
+    N_t = numcases * numbatches    
+
     #initializeing symmetric weights and bias
     weight_vh = 0.1 * random.rand(numdim, numhid)
     hibias = np.zeros((1,numhid))
