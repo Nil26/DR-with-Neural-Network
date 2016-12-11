@@ -15,7 +15,7 @@ def fun_normal(data):
     data_new = np.divide(data, np.repeat(sigma_nonzero, n, axis=0))
     return data_new
 
-def fun_batch(numbatches, data):
+def fun_batch(data, numbatches):
     #initialize
     n,d = data.shape
     numcases = n / numbatches

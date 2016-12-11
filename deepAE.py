@@ -12,23 +12,23 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 # data treatment
-from data_treatment import data_treatment
+from data_treatment import fun_batch
 # rbm first layer
 from rbmc_b import fun_RBM_con
 # rbm following layers
 from rbm import fun_RBM
 
-def mnist_read():
+def mnist_read(n_train):
     mnist_49_3000 = sio.loadmat('mnist_49_3000.mat')
     x = mnist_49_3000['x']
     y = mnist_49_3000['y']
     d,n= x.shape
     data = np.transpose(x)
     label = np.transpose(y)
-    data_train = data[0:2000,:]
-    label_train = label[0:2000,:]
-    data_test = data[2000:,:]
-    label_test = label[2000:,:]
+    data_train = data[0:n_train,:]
+    label_train = label[0:n_train,:]
+    data_test = data[n_train:,:]
+    label_test = label[n_train:,:]
     return data_train, label_train, data_test, label_test
 
 def yalefaces_read():
@@ -59,14 +59,23 @@ def mandrill_read():
 def AE_forward(X, Wb, N, batch_size):
     d, n = X.shape
                 
-def train_AE(train_data, N, num_iter, batch_size, err_type, epsilon, rand_seed):
+def train_AE():
     num_layers = np.size(N)
-    data_train, label_train, data_test, label_test = mnist_read()
+    data_train, label_train, data_test, label_test = mnist_read(2000)
     # Do the data treatment(design unit variance) and divide into batches
     data_batch_train = data_treatment(data_train,20)
     # first layer training
     hid_data, weight_vh, hibias, vibias, E_fun = fun_RBM_con(data_batch_train, N[1])
     return data_batch_train
+    
+def RBM_train_unitest():
+    N = np.array([784,400,2])
+    data_train, label_train, data_test, label_test = mnist_read(100)
+    # Do the data treatment(design unit variance) and divide into batches
+    data_batch_train = fun_batch(data_train,10)
+    # first layer training
+    hid_data, weight_vh, hibias, vibias, E_fun = fun_RBM(data_batch_train, N[1])
+    
     
 def plot_mnist(train_data, train_labels, test_data, test_labels, Wb, N, RBM_error, BP_error):
     '''
