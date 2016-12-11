@@ -32,14 +32,14 @@ n = 1000
 
 # calculate the probability of data and hidden for continues to binary RBM
 # calculation for update data and hidden variables
-def fun_data_cal(hid_data, weight_vh, vibias):
+def fun_data_cal(hid_data, weight_vh, vibias, numcases):
     # here follows the gaussian function
     mean = np.add(np.dots(weight_vh, hid_data.transpose()).transpose(), np.repeat(vibias, numcases,axis=0)) 
     return mean
 
 
 
-def fun_prob_hid(data, weight_vh, hibias):
+def fun_prob_hid(data, weight_vh, hibias, numcases, numdim):
     Ones_m = np.full((numcases,numdim), 1.0)
     #element inside logistic function
     X = -  np.dots(data, weight_vh) - np.repeat(hibias, numcases, axis=0)
@@ -54,7 +54,7 @@ def fun_up(data_hid_prob):
     return hid_data
 
 # function to use data and hidden to up data parameters
-def fun_deltaweight(data, hid_data, hid_con, data_con):
+def fun_deltaweight(data, hid_data, hid_con, data_con, numcases):
     weight_o = epsilonw /(numcases+0.0) * (np.dot(data.transpose(), hid_data) - np.dot(data_con.transpose(), hid_con))
     return weight_o
 
@@ -65,13 +65,13 @@ def fun_deltavbias(data, con_data, epsilonvb):
 def fun_deltahbias(hid_data, hid_con, epsilonhb):
     return epsilonhb * (hid_data.mean(0) - hid_con.mean(0))
 
-def energy_cal(data, weight_vh, vibias, hibias):
-    hid_prob = fun_prob_hid(data, weight_vh, hibias)
+def energy_cal(data, weight_vh, vibias, hibias, numcases, numdim):
+    hid_prob = fun_prob_hid(data, weight_vh, hibias, numcases, numdim)
     hid = fun_up(hid_prob)
     energy =  np.mean(np.dot(vibias, data.transpose())) +  np.mean(np.dot(hibias, hid.transpose())) + np.mean(np.multiply(np.dot(data, weight_vh), hid))
     return energy    
 
-def fun_CD_k_c(k, data, weight_vh, vibias, hibias):
+def fun_CD_k_c(k, data, weight_vh, vibias, hibias, numcases, numdim ,numhid):
         # probabilities we may need while calculation
     prob_hid = np.zeros((numcases, numhid))
     hidprob = np.zeros((numcases, numhid))
@@ -82,13 +82,13 @@ def fun_CD_k_c(k, data, weight_vh, vibias, hibias):
     #as sigma has different dimention to other matrixs
     for i in range(k):
         #construct hidden layer from data
-        prob_hid = fun_prob_hid(data_k[k,:,:], weight_vh, hibias)
+        prob_hid = fun_prob_hid(data_k[k,:,:], weight_vh, hibias, numcases, numdim)
         hidden_k[k] = fun_up(prob_hid)
         #construct confabulation state from hidden layers
-        prob_data = fun_data_cal(hidden_k[k], weight_vh, vibias)
+        prob_data = fun_data_cal(hidden_k[k], weight_vh, vibias, numcases)
         data_k[k+1] = prob_data
     #construct confabulation hidden state from confabulation data
-    hidprob = fun_prob_hid(data_k[k+1], weight_vh, hibias)
+    hidprob = fun_prob_hid(data_k[k+1], weight_vh, hibias, numcases, numdim)
     hid_con = fun_up(hidprob)
     return hid_con, data_k[k+1]
 
@@ -125,13 +125,13 @@ def fun_RBM_con(batchdata, numhid):
     #loop
     data_1 = batchdata.reshape(N_t, numdim)
     for iteration in range(n):
-        E_fun[iteration] = energy_cal(data_1, weight_vh, vibias, hibias)
+        E_fun[iteration] = energy_cal(data_1, weight_vh, vibias, hibias, numcases, numdim)
         for batch in range(numbatches):
             data = batchdata[:,:,batch]
             #CD-k algorithm
-            hid_con, data_con = fun_CD_k_c(k, data, weight_vh, vibias, hibias)
+            hid_con, data_con = fun_CD_k_c(k, data, weight_vh, vibias, hibias, numcases, numdim ,numhid)
             # update parameters:
-            delta_weight = fun_deltaweight(data, hid_data, hid_con, data_con)
+            delta_weight = fun_deltaweight(data, hid_data, hid_con, data_con, numcases)
             delta_hibias = fun_deltahbias(hid_data, hid_con, epsilonhb)
             delta_vibias = fun_deltavbias(data, data_con, epsilonvb)
             weight_vh = weight_vh - delta_weight
@@ -140,8 +140,8 @@ def fun_RBM_con(batchdata, numhid):
             if delta_weight < 0.001 and hibias < 0.001 and vibias < 0.001:
                 break
         if delta_weight < 0.001 and hibias < 0.001 and vibias < 0.001:
-            E_fun[iteration+1] = energy_cal(data_1, weight_vh, vibias, hibias)      
+            E_fun[iteration+1] = energy_cal(data_1, weight_vh, vibias, hibias, numcases, numdim)      
             break
-    prob = fun_prob_hid(data, weight_vh, hibias)
+    prob = fun_prob_hid(data, weight_vh, hibias, numcases, numdim)
     hid_data = fun_up(hid_data, prob)
     return hid_data, weight_vh, hibias, vibias, E_fun
