@@ -17,15 +17,15 @@ finalmomentum = 0.9
 k = 1
 
 
-# parameters of the data and output
-numcases = 1000
-numdim = 1000 # this is the number of visble dimensions
-numbatches = 100
-numhid = 20
-#data
-batchdata = np.zeros((numcases,numdim, numbatches))
-#number of data
-N_t = numcases * numbatches
+## parameters of the data and output
+#numcases = 1000
+#numdim = 1000 # this is the number of visble dimensions
+#numbatches = 100
+#numhid = 20
+##data
+#batchdata = np.zeros((numcases,numdim, numbatches))
+##number of data
+#N_t = numcases * numbatches
 # number of run
 n = 1000
 
@@ -96,7 +96,7 @@ def fun_CD_k_c(k, data, weight_vh, vibias, hibias):
 #define continuous to binary PBM
 #####################################################################
 
-def fun_RBM_con(bachdata, numhid):
+def fun_RBM_con(batchdata, numhid):
     # parameters of the data and output
     numcases, numdim, numbatches = batchdata.shape
     #number of data

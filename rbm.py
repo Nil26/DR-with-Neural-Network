@@ -16,13 +16,13 @@ finalmomentum = 0.9
 #parameter to decide algorithm
 k = 1
 
-# parameters of the data and output
-numcases = 1000
-numdim = 1000 # this is the number of visble dimensions
-numbatches = 100
-numhid = 20
-#data
-batchdata = np.zeros((numcases,numdim, numbatches))
+## parameters of the data and output
+#numcases = 1000
+#numdim = 1000 # this is the number of visble dimensions
+#numbatches = 100
+#numhid = 20
+##data
+#batchdata = np.zeros((numcases,numdim, numbatches))
 
 # number of run
 n = 1000
