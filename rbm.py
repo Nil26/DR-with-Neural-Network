@@ -125,9 +125,9 @@ def fun_RBM(batchdata, numhid):
             delta_weight = fun_delta_weight(data, hid_data, hid_con, data_con)
             delta_hibias = fun_delta_bias(hid_data, hid_con, epsilonhb)
             delta_vibias = fun_delta_bias(data, data_con, epsilonvb)
-            weight_vh = weight_vh + delta_weight
-            hibias = hibias + delta_hibias
-            vibias = vibias + delta_vibias
+            weight_vh = weight_vh - delta_weight
+            hibias = hibias - delta_hibias
+            vibias = vibias - delta_vibias
             if delta_weight < 0.001 and hibias < 0.001 and vibias < 0.001:
                 break
         if delta_weight < 0.001 and hibias < 0.001 and vibias < 0.001:
