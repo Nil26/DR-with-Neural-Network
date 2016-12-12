@@ -4,15 +4,12 @@ import numpy.random as random
 
 #data treatment
 
-def fun_normal(data):
+def fun_binary(data):
     n, d = data.shape
     #initialize
-    sigma = np.zeros((1,d))
     data_new = np.zeros((n, d))
     #normalization
-    sigma = np.array([np.std(data, 0)])
-    sigma_nonzero = np.add(sigma, (sigma==0))
-    data_new = np.divide(data, np.repeat(sigma_nonzero, n, axis=0))
+    data_new = np.rint(data)    
     return data_new
 
 def fun_batch(data, numbatches):
@@ -31,6 +28,6 @@ def data_treatment(data, numbatches):
     #initialize
     data_new = np.zeros((n,d))
     data_batch = np.zeros((numcases, d, numbatches))
-    data_new = fun_normal(data)
+    data_new = fun_binary(data)
     data_batch = fun_batch(numbatches, data_new)
     return data_batch
