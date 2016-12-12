@@ -37,13 +37,13 @@ def fun_normal(data):
     n, d = data.shape
     #initialize
     data_new = np.zeros((n, d))
-    sigma = np.zeros((1,d))
+    sigma = np.array([np.zeros((1,d))])
     mean = np.zeros((1,d))
     #normalization
-    sigma = np.std(data, axis=0)
-    mean = np.mean(data, axis=0)
+    sigma = np.array([np.std(data, axis=0)])
+    mean = np.array([np.mean(data, axis=0)])
     sigma_nonzero = np.add(sigma, (sigma == 0))
-    data_new = np.divide(np.stract(data, np.repeat(mean, n, axis=0)), np.repeat(sigma_nonzero, n, axis=0))   
+    data_new = np.divide(np.subtract(data, np.repeat(mean, n, axis=0)), np.repeat(sigma_nonzero, n, axis=0))   
     return data_new
 
 def data_treatment_new(data, numbatches):
