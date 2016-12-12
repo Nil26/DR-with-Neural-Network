@@ -14,6 +14,7 @@ from PIL import Image
 # data treatment
 from data_treatment import data_treatment
 from data_treatment import data_treatment_new
+from data_treatment import fun_batch
 # rbm first layer
 from rbmc_b import fun_RBM_con
 # rbm following layers
@@ -22,6 +23,7 @@ from rbm import fun_RBM
 from rbm import fun_prob_d
 from rbm import fun_uphid
 from rbmc_b import fun_data_cal
+from RBM_new import fun_RBM_new
 
 def mnist_read(n_train):
     mnist_49_3000 = sio.loadmat('mnist_49_3000.mat')
@@ -79,7 +81,7 @@ def RBM_train_unitest():
     # Do the data treatment(design unit variance) and divide into batches
     data_batch_train = data_treatment(data_train,10)
     # first layer training
-    hid_data, weight_vh, hibias, vibias, E_fun = fun_RBM(data_batch_train, N[1])
+    hid_data, weight_vh, hibias, vibias, E_fun, err = fun_RBM(data_batch_train, N[1])
     
     # remap the 
     prob = fun_prob_d(hid_data[:,:,0], weight_vh, vibias, 10, 784)
@@ -92,12 +94,12 @@ def RBM_train_unitest_new():
     N = np.array([784,400,2])
     data_train, label_train, data_test, label_test = mnist_read(100)
     # Do the data treatment(design unit variance) and divide into batches
-    data_batch_train = data_treatment_new(data_train,10)
+    data_batch_train = fun_batch(data_train,10)
     # first layer training
-    hid_data, weight_vh, hibias, vibias, E_fun = fun_RBM_con(data_batch_train, N[1])
+    hid_data, weight_vh, hibias, vibias, E_fun, err = fun_RBM_new(data_batch_train, N[1])
     
     # remap the 
-    datacon = fun_data_cal(hid_data[:,:,0], weight_vh, vibias, 10)
+    datacon = fun_prob_d(hid_data[:,:,0], weight_vh, vibias, 10, 784)
     
     plt.imshow(datacon[0,:].reshape(28,28))
     plt.imshow(data_batch_train[0,:,0].reshape(28,28))

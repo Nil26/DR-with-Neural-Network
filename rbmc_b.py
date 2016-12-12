@@ -69,7 +69,7 @@ def fun_deltahbias(hid_data, hid_con, epsilonhb):
 def energy_cal(data, weight_vh, vibias, hibias, number_tot, numhid):
     hid_prob = fun_prob_hid(data, weight_vh, hibias, number_tot, numhid)
     hid = fun_up(hid_prob)
-    energy =  np.mean(np.dot(vibias, data.transpose())) +  np.mean(np.dot(hibias, hid.transpose())) + np.mean(np.multiply(np.dot(data, weight_vh), hid))
+    energy =  0.5 * np.mean(np.square(np.multiply(data-np.repeat(vibias, number_tot, axis=0))), axis = 0) +  np.mean(np.dot(hibias, hid.transpose())) + np.mean(np.multiply(np.dot(data, weight_vh), hid))
     return -energy    
 
 def fun_CD_k_c(k, data, weight_vh, vibias, hibias, numcases, numdim ,numhid):
@@ -104,7 +104,7 @@ def fun_RBM_con(batchdata, numhid):
     N_t = numcases * numbatches    
 
     #initializeing symmetric weights and bias
-    weight_vh = 0.2 * (random.rand(numdim, numhid)-0.5)
+    weight_vh = random.rand(numdim, numhid)
     hibias = np.zeros((1,numhid))
     vibias = np.zeros((1,numdim))
 

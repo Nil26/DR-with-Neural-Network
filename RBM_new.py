@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Dec 12 11:11:03 2016
+
+@author: zheng
+"""
+
 #!/usr/bin/python2.7
 import numpy as np
 import numpy.random as random
@@ -53,8 +60,8 @@ def fun_uphid(data_hid_prob):
     return hid_data
 
 # function to use data and hidden to up data parameters
-def fun_delta_weight(data, hid_data, hid_con, data_con, numcases):
-    delta_weight =epsilonw /(numcases+0.0) * (np.dot(data.transpose(), hid_data) - np.dot(data_con.transpose(), hid_con))
+def fun_delta_weight(data, prob_hid, hidprob, data_con, numcases):
+    delta_weight =epsilonw /(numcases+0.0) * (np.dot(data.transpose(), prob_hid) - np.dot(data_con.transpose(), hidprob))
     return delta_weight
 
 def fun_delta_bias(data, con_data, epsilonvb):
@@ -81,17 +88,17 @@ def fun_CD_k(k, data, weight_vh, hibias, vibias, numcases, numdim, numhid):
         hidden_k[i] = fun_uphid(prob_hid)
         #construct confabulation state from hidden layers
         prob_data = fun_prob_d(hidden_k[i], weight_vh, vibias, numcases, numdim)
-        data_k[i+1] = fun_uphid(prob_data)
+        data_k[i+1] = prob_data
     #construct confabulation hidden state from confabulation data
     hidprob = fun_prob_h(data_k[k], weight_vh, hibias, numcases, numhid)
     hid_con = fun_uphid(hidprob)
-    return hidden_k[0], hid_con, data_k[k]
+    return hidden_k[0], prob_hid, hid_con, data_k[k], hidprob
 
 
 #####################################################################################################
 #define one layer RBM (normal)
 #################################################################################
-def fun_RBM(batchdata, numhid):
+def fun_RBM_new(batchdata, numhid):
     # parameters of the data and output
     numcases, numdim, numbatches = batchdata.shape
     #number of data
@@ -121,24 +128,23 @@ def fun_RBM(batchdata, numhid):
         for batch in range(numbatches):
             data = batchdata[:,:,batch]
             #CD-k algorithm
-            hid_data, hid_con, data_con = fun_CD_k(k, data, weight_vh, hibias, vibias, numcases, numdim, numhid)
+            hid_data, prob_hid, hid_con, data_con, hidprob = fun_CD_k(k, data, weight_vh, hibias, vibias, numcases, numdim, numhid)
             # update parameters:
-            delta_weight = fun_delta_weight(data, hid_data, hid_con, data_con, numcases)
+            delta_weight = fun_delta_weight(data, prob_hid, hidprob, data_con, numcases)
             delta_hibias = fun_delta_bias(hid_data, hid_con, epsilonhb)
             delta_vibias = fun_delta_bias(data, data_con, epsilonvb)
             weight_vh = weight_vh + delta_weight
             hibias = hibias + delta_hibias
             vibias = vibias + delta_vibias
-            if LA.norm(delta_weight) < 0.001 and LA.norm(delta_hibias) < 0.001 and LA.norm(delta_vibias) < 0.001:
-                break
         data_2 = fun_prob_h(data_1, weight_vh, hibias, N_t, numhid)
         data_3 = fun_prob_d(data_2, weight_vh, vibias, N_t, numdim)
         err[iteration] = LA.norm(data_1 - data_3)
-        if LA.norm(delta_weight) < 0.001 and LA.norm(delta_hibias) < 0.001 and LA.norm(delta_vibias) < 0.001:
-            E_fun[iteration+1] = energy_cal(data_1, weight_vh, vibias, hibias, N_t, numhid)
-            break
+        if iteration > 1:
+            if err[iteration]/N_t < 0.1 or (LA.norm(delta_weight) < 0.1 and LA.norm(delta_hibias) < 0.1 and LA.norm(delta_vibias) < 0.1):
+                E_fun[iteration+1] = energy_cal(data_1, weight_vh, vibias, hibias, N_t, numhid)
+                break
     prob = fun_prob_h(data_1, weight_vh, hibias, N_t, numhid)
     hid_data_1 = fun_uphid(prob)
-    hid_data = np.transpose(hid_data_1.reshape(numcases, numbatches, numhid),(0,2,1))
+    hid_data = np.transpose(hid_data_1.reshape(numcases, numbatches, numhid), (0,2,1))
     return hid_data, weight_vh, hibias, vibias, E_fun, err
         
