@@ -29,5 +29,5 @@ def data_treatment(data, numbatches):
     data_new = np.zeros((n,d))
     data_batch = np.zeros((numcases, d, numbatches))
     data_new = fun_binary(data)
-    data_batch = fun_batch(numbatches, data_new)
+    data_batch = fun_batch(data_new, numbatches)
     return data_batch

@@ -25,7 +25,7 @@ k = 1
 #batchdata = np.zeros((numcases,numdim, numbatches))
 
 # number of run
-n = 1000
+n = 500
 
 
 
@@ -64,7 +64,7 @@ def energy_cal(data, weight_vh, vibias, hibias, number_tot, numhid):
     hid_prob = fun_prob_h(data, weight_vh, hibias, number_tot, numhid)
     hid = fun_uphid(hid_prob)
     energy =  np.mean(np.dot(vibias, data.transpose())) +  np.mean(np.dot(hibias, hid.transpose())) + np.mean(np.multiply(np.dot(data, weight_vh), hid))
-    return energy
+    return -energy
 
 def fun_CD_k(k, data, weight_vh, hibias, vibias, numcases, numdim, numhid):
     # probabilities we may need while calculation
@@ -128,9 +128,9 @@ def fun_RBM(batchdata, numhid):
             weight_vh = weight_vh + delta_weight
             hibias = hibias + delta_hibias
             vibias = vibias + delta_vibias
-            if LA.norm(delta_weight) < 0.1 and LA.norm(delta_hibias) < 0.1 and LA.norm(delta_vibias) < 0.1:
+            if LA.norm(delta_weight) < 0.001 and LA.norm(delta_hibias) < 0.001 and LA.norm(delta_vibias) < 0.001:
                 break
-        if LA.norm(delta_weight) < 0.1 and LA.norm(delta_hibias) < 0.1 and LA.norm(delta_vibias) < 0.1:
+        if LA.norm(delta_weight) < 0.001 and LA.norm(delta_hibias) < 0.001 and LA.norm(delta_vibias) < 0.001:
             E_fun[iteration+1] = energy_cal(data_1, weight_vh, vibias, hibias, N_t, numhid)
             break
     prob = fun_prob_h(data_1, weight_vh, hibias, N_t, numhid)

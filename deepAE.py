@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 # data treatment
-from data_treatment import fun_batch
+from data_treatment import data_treatment
 # rbm first layer
 from rbmc_b import fun_RBM_con
 # rbm following layers
@@ -72,7 +72,7 @@ def RBM_train_unitest():
     N = np.array([784,400,2])
     data_train, label_train, data_test, label_test = mnist_read(100)
     # Do the data treatment(design unit variance) and divide into batches
-    data_batch_train = fun_batch(data_train,10)
+    data_batch_train = data_treatment(data_train,10)
     # first layer training
     hid_data, weight_vh, hibias, vibias, E_fun = fun_RBM(data_batch_train, N[1])
     
