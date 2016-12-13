@@ -13,16 +13,12 @@ from PIL import Image
 
 # data treatment
 from data_treatment import data_treatment
-from data_treatment import data_treatment_new
 from data_treatment import fun_batch
-# rbm first layer
-from rbmc_b import fun_RBM_con
 # rbm following layers
 from rbm import fun_RBM
 
 from rbm import fun_prob_d
 from rbm import fun_uphid
-from rbmc_b import fun_data_cal
 from RBM_new import fun_RBM_new
 
 def mnist_read(n_train):
@@ -61,21 +57,9 @@ def mandrill_read():
             for j in range(0,d,M):
                 #print c,i,j,M,y[i:i+M,j:j+M,:].shape, M*M*3
                 x[c,:] = np.reshape(y[i:i+M,j:j+M,:],[1,M*M*3])
-                c = c+1
-
-def AE_forward(X, Wb, N, batch_size):
-    d, n = X.shape
-                
-def train_AE():
-    num_layers = np.size(N)
-    data_train, label_train, data_test, label_test = mnist_read(2000)
-    # Do the data treatment(design unit variance) and divide into batches
-    data_batch_train = data_treatment(data_train,20)
-    # first layer training
-    hid_data, weight_vh, hibias, vibias, E_fun = fun_RBM_con(data_batch_train, N[1])
-    return data_batch_train
+                c = c+1                
     
-def RBM_train_unitest():
+def RBM_train_unitest_mnist():
     N = np.array([784,400,2])
     data_train, label_train, data_test, label_test = mnist_read(100)
     # Do the data treatment(design unit variance) and divide into batches
@@ -90,7 +74,7 @@ def RBM_train_unitest():
     plt.imshow(datacon[0,:].reshape(28,28))
     plt.imshow(data_batch_train[0,:,0].reshape(28,28))
 
-def RBM_train_unitest_new():
+def RBM_train_unitest_new_mnist():
     N = np.array([784,400,2])
     data_train, label_train, data_test, label_test = mnist_read(100)
     # Do the data treatment(design unit variance) and divide into batches
@@ -104,50 +88,3 @@ def RBM_train_unitest_new():
     plt.imshow(datacon[0,:].reshape(28,28))
     plt.imshow(data_batch_train[0,:,0].reshape(28,28))
     
-    
-def plot_mnist(train_data, train_labels, test_data, test_labels, Wb, N, RBM_error, BP_error):
-    '''
-    function plot_mnist ( train_data, train_labels, test_data, test_labels, ...
-    Wb, n, RBM_error, BP_error )
-    This function displays the results of the autoencoder on the MNIST
-    data, assuming an encoder with final dimension 2.  The results are
-    displayed using two dimensional plots and plots of reconstruction error
-    at the different phases of the algorithm.
-
-    INPUTS: train_data, test_data -- input data with points as columns.
-    train_labals, test_labels -- labels of corresponding data.
-    Wb, n -- autoencoder weights, biases, and dimensions.
-    RBM_error, BP_error -- error matrices as returned by train_AE.
-
-    OUTPUTS: Error plots are shown in figures 1 & 2, visualizations are
-    shown in figures 3.
-    '''    
-    # RBM error plot in figure 1
-    plt.figure()
-    plt.clf()
-    plt.plot(RBM_error)
-    title('Reconstruction Error for RBM pre-training')
-    xlabel('Iteration')
-    ylabel('Mean Squared Error')
-    
-    # BP error plot in figure 2
-    plt.figure()
-    plt.clf()
-    plt.plot(BP_error)
-    title('Reconstruction Error for fine-tuning')
-    xlabel('Iteration')
-    ylabel('Mean Squared Error')
-    
-    # mnist visualization - training data
-    Y = AE_forward(train_data, Wb, n, batch_size)
-    plt.figure()
-    plt.clf()
-    plt.plot(Y)
-    title('Training Data')
-    
-    # mnist visualization - test data
-    Y = AE_forward(test_data, Wb, n, batch_size)
-    plt.figure()
-    plt.clf()
-    plt.plot(Y)
-    title('Training Data')
