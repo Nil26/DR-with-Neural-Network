@@ -1,0 +1,22 @@
+####  PBS preamble
+#PBS -N DeepAutoEncoder_Pretrain_FULL_witherr
+#PBS -M zhshang@umich.edu
+#PBS -m abe
+
+#PBS -l procs=1,mem=1gb,walltime=2:00:00:00
+#PBS -V
+
+#PBS -A lsa_flux
+#PBS -l qos=flux
+#PBS -q flux
+####  End PBS preamble
+
+#  Show list of CPUs you ran on, if you're running under PBS
+if [ -n "$PBS_NODEFILE" ]; then cat $PBS_NODEFILE; fi
+
+#  Change to the directory you submitted from
+if [ -n "$PBS_O_WORKDIR" ]; then cd $PBS_O_WORKDIR; fi
+pwd
+
+#  Put your job commands after this line
+python PretrainAE_mnist_full.py

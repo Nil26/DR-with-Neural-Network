@@ -1,0 +1,4 @@
+/home/zhshang/DeepEncoder/mnist/data_treatment.py:29: VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
+  data_batch = np.zeros((numcases, numbatches, d))
+/home/zhshang/DeepEncoder/mnist/data_treatment.py:30: VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
+  data_batch = data.reshape((numcases, numbatches, d))
