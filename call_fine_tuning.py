@@ -9,8 +9,8 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 # simulation data
-training_steps = 1000
-simulate_data_num = 50
+training_steps = 200
+simulate_data_num = 3
 num_batch = 3
 lr = 0.01
 
@@ -34,12 +34,6 @@ b_list_4_layer = [ini_value_b1, ini_value_b2, ini_value_b3, ini_value_b4, ini_va
 
 simulate_data = rng.randn(10,simulate_data_num)  # 50 data points
 
-total_cost_record_3_lay, w_list_output_3_lay, b_list_output_3_lay = fine_tuning(w_list_3_layer, b_list_3_layer, simulate_data, num_batch, training_steps, lr)
+#total_cost_record_3_lay, w_list_output_3_lay, b_list_output_3_lay = fine_tuning(w_list_3_layer, b_list_3_layer, simulate_data, num_batch, training_steps, lr)
 total_cost_record_4_lay, w_list_output_4_lay, b_list_output_4_lay = fine_tuning(w_list_4_layer, b_list_4_layer, simulate_data, num_batch, training_steps, lr)
 
-
-
-fig, ax = plt.subplots()
-ax.scatter(range(len(total_cost_record_3_lay)),total_cost_record_3_lay)
-ax.scatter(range(len(total_cost_record_4_lay)),total_cost_record_4_lay)
-plt.show()
