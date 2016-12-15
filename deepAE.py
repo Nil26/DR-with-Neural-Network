@@ -95,7 +95,7 @@ def autoencoder_output(w_list_4_layer, b_list_4_layer, data, N, num_test):
     vis6 = fun_uphid(prob6)
     prob7 = fun_prob_d(vis6, w2, vbias2, num_test, N[1])
     vis7 = fun_uphid(prob7)
-    # continuous data reconstruction
+    # binary data reconstruction
     prob8 = fun_prob_d(vis7, w1, vbias1, num_test, N[0])
     data_con = fun_uphid(prob8)
     
@@ -119,7 +119,7 @@ def face_read(n_train):
     yalefaces = yale['yalefaces']
     # normalize the color data
     face_data = yalefaces.reshape(2016,2414)
-    face_norm = face_data/255
+    face_norm = face_data/255.
     data = np.transpose(face_norm)
     data_train = data[0:n_train,:]
     data_test = data[n_train:,:]
@@ -152,26 +152,26 @@ def face_read(n_train):
 #    plt.imshow(data_show)
 
 def pretrain_faces_unitest():
-    N = np.array([2016,400,2])
-    data_train, data_test = face_read(100)
+    N = np.array([2016,1400,2])
+    data_train, data_test = face_read(2000)
     # Do the data treatment(design unit variance) and divide into batches
-    data_batch_train = fun_batch(data_train,10)
+    data_batch_train = fun_batch(data_train,5)
     # first layer training
     hid_data, weight_vh, hibias, vibias, E_fun, err = fun_RBM_new(data_batch_train, N[1])
     
     # remap the 
-    datacon = fun_prob_d(hid_data[:,:,0], weight_vh, vibias, 10, 2016)    
+    datacon = fun_prob_d(hid_data[:,:,0], weight_vh, vibias, 400, 2016)    
     
-    datacon_show = datacon[0,:].reshape(48,42)*255
-    data_show = data_batch_train[0,:,0].reshape(48,42)*255
+    datacon_show = datacon[1,:].reshape(48,42)*255
+    data_show = data_batch_train[1,:,0].reshape(48,42)*255
     plt.imshow(datacon_show)
     plt.imshow(data_show)
                 
 def RBM_train_unitest_mnist():
-    N = np.array([784,400,2])
-    data_train, label_train, data_test, label_test = mnist_read(100)
+    N = np.array([784,1000,2])
+    data_train, label_train, data_test, label_test = mnist_read(2000)
     # Do the data treatment(design unit variance) and divide into batches
-    data_batch_train = data_treatment(data_train,10)
+    data_batch_train = data_treatment(data_train,20)
     # first layer training
     hid_data, weight_vh, hibias, vibias, E_fun, err = fun_RBM(data_batch_train, N[1])
     
@@ -185,10 +185,10 @@ def RBM_train_unitest_mnist():
     plt.imshow(data_batch_train[0,:,0].reshape(28,28))
 
 def RBM_train_unitest_new_mnist():
-    N = np.array([784,2000,2])
-    data_train, label_train, data_test, label_test = mnist_read(100)
+    N = np.array([784,1000,2])
+    data_train, label_train, data_test, label_test = mnist_read(2000)
     # Do the data treatment(design unit variance) and divide into batches
-    data_batch_train = fun_batch(data_train,10)
+    data_batch_train = fun_batch(data_train,20)
     # first layer training
     hid_data, weight_vh, hibias, vibias, E_fun, err = fun_RBM_new(data_batch_train, N[1])
     
